@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Untuk Guru SMK Tercinta</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --kuning: #fff1be;
+        --kuning2: #ffd35c;
+        --biru: #d8eeff;
+        --biru2: #86c9f2;
+        --teks: #2c4a73;
+        --putih: #fffcf4;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Fredoka", "Trebuchet MS", sans-serif;
+        background: linear-gradient(170deg, var(--biru) 0%, var(--kuning) 100%);
+        min-height: 100vh;
+        color: var(--teks);
+        overflow-x: hidden;
+      }
+      button {
+        font-family: inherit;
+        cursor: pointer;
+        border: none;
+        border-radius: 18px;
+        transition: transform 0.12s;
+      }
+      button:active {
+        transform: scale(0.95);
+      }
+      button:focus-visible,
+      .foto:focus-visible {
+        outline: 3px dashed var(--teks);
+        outline-offset: 4px;
+      }
+      .screen {
+        display: none;
+        min-height: 100vh;
+        padding: 24px 16px 96px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .screen.aktif {
+        display: flex;
+        animation: muncul 0.7s ease;
+      }
+      @keyframes muncul {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .kartu {
+        background: var(--putih);
+        border-radius: 28px;
+        padding: 26px 22px;
+        max-width: 440px;
+        width: 100%;
+        box-shadow: 0 12px 0 rgba(134, 201, 242, 0.35);
+      }
+      .kartu.lebar {
+        max-width: 620px;
+      }
+      .kartu.goyang {
+        animation: goyang 0.4s;
+      }
+      @keyframes goyang {
+        20%,
+        60% {
+          transform: translateX(-8px);
+        }
+        40%,
+        80% {
+          transform: translateX(8px);
+        }
+      }
+      h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 10px;
+      }
+      h2 {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      p {
+        line-height: 1.6;
+        margin: 8px 0;
+      }
+      .kecil {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+      .btn {
+        background: var(--biru2);
+        color: #fff;
+        padding: 13px 24px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        box-shadow: 0 5px 0 #5aa6d6;
+        margin-top: 16px;
+      }
+      .btn:hover {
+        filter: brightness(1.06);
+      }
+      .btn.sekunder {
+        background: var(--kuning2);
+        color: var(--teks);
+        box-shadow: 0 5px 0 #e0b23f;
+      }
+      .maskot {
+        font-size: 3.4rem;
+        animation: melayang 2.4s ease-in-out infinite;
+      }
+      .maskot-img {
+        width: 140px;
+        height: 140px;
+        object-fit: contain;
+        font-size: 0;
+        display: block;
+        margin: 0 auto;
+      }
+      @keyframes melayang {
+        50% {
+          transform: translateY(-8px) rotate(4deg);
+        }
+      }
+
+      /* Kunci layar */
+      #titik {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin: 16px 0 4px;
+      }
+      #titik span {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2.5px solid var(--biru2);
+        transition: background 0.2s;
+      }
+      #titik span.isi {
+        background: var(--kuning2);
+        border-color: var(--kuning2);
+      }
+      .pad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .pad button {
+        background: var(--biru);
+        color: var(--teks);
+        font-size: 1.45rem;
+        font-weight: 700;
+        padding: 14px 0;
+        box-shadow: 0 5px 0 var(--biru2);
+      }
+      .pad button[data-k="del"] {
+        background: var(--kuning);
+        box-shadow: 0 5px 0 var(--kuning2);
+      }
+
+      /* Latar guru di belakang layar kunci */
+      #kunci {
+        overflow: hidden;
+      }
+
+      .bg-wrap {
+        height: calc(clamp(160px, 34vh, 260px) * 0.5);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 0px;
+      }
+      .bg-guru {
+        display: block;
+        height: clamp(160px, 34vh, 260px);
+        width: auto;
+        max-width: 80vw;
+        object-fit: contain;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      #kunci .kartu {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Modal ujian & pesta */
+      .modal,
+      .pesta {
+        position: fixed;
+        inset: 0;
+        background: rgba(44, 74, 115, 0.42);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        z-index: 50;
+      }
+      .modal.tampil,
+      .pesta.tampil {
+        display: flex;
+      }
+      .modal .kartu {
+        animation: muncul 0.45s ease;
+      }
+      .pesta {
+        background: rgba(255, 241, 190, 0.94);
+        z-index: 60;
+      }
+      .opsi {
+        display: block;
+        width: 100%;
+        background: var(--kuning);
+        color: var(--teks);
+        padding: 13px;
+        margin: 9px 0;
+        font-size: 1rem;
+        font-weight: 600;
+        box-shadow: 0 4px 0 var(--kuning2);
+      }
+      .skor {
+        font-size: 1.6rem;
+        font-weight: 700;
+        background: var(--biru);
+        border-radius: 20px;
+        padding: 14px;
+        margin: 12px 0;
+      }
+
+      /* Layar utama */
+      .area {
+        position: relative;
+        display: inline-block;
+      }
+      .siswa {
+        width: 150px;
+        height: auto;
+        transform-origin: 50% 100%;
+        animation: ayun 3s ease-in-out infinite;
+        cursor: pointer;
+      }
+      @keyframes ayun {
+        50% {
+          transform: rotate(-2.5deg);
+        }
+      }
+      .membungkuk {
+        animation: bungkuk 1s ease !important;
+      }
+      @keyframes bungkuk {
+        35%,
+        65% {
+          transform: rotate(20deg);
+        }
+      }
+      .tipsKotak {
+        position: absolute;
+        right: -22px;
+        bottom: 16px;
+        font-size: 2.1rem;
+        cursor: pointer;
+        animation: melayang 2.4s infinite;
+      }
+      .tipsKotak::after {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: 115%;
+        right: -6px;
+        width: 210px;
+        background: var(--teks);
+        color: #fff;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        padding: 10px;
+        border-radius: 14px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+        text-align: left;
+      }
+      .tipsKotak:hover::after,
+      .tipsKotak.buka::after {
+        opacity: 1;
+      }
+      .pesanSiswa {
+        margin: 12px 0 4px;
+        min-height: 52px;
+        font-weight: 600;
+        font-size: 1.05rem;
+      }
+
+      /* Galeri */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .foto {
+        position: relative;
+        height: 170px;
+        cursor: pointer;
+        perspective: 900px;
+      }
+      .sisi {
+        position: absolute;
+        inset: 0;
+        border-radius: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        backface-visibility: hidden;
+        transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+      }
+      .depan {
+        background: linear-gradient(140deg, #fff, var(--biru));
+      }
+      .belakang {
+        background: var(--kuning);
+        transform: rotateY(180deg);
+        font-weight: 600;
+      }
+      .foto.balik .depan {
+        transform: rotateY(180deg);
+      }
+      .foto.balik .belakang {
+        transform: rotateY(0);
+      }
+
+      /* Konfeti */
+      .conf {
+        position: fixed;
+        top: -30px;
+        width: 10px;
+        height: 14px;
+        border-radius: 3px;
+        z-index: 70;
+        pointer-events: none;
+        animation: jatuh linear forwards;
+      }
+      @keyframes jatuh {
+        to {
+          transform: translateY(112vh) rotate(720deg);
+        }
+      }
+
+      /* Musik & notifikasi */
+      #btnMusik {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: var(--kuning2);
+        font-size: 1.5rem;
+        box-shadow: 0 5px 0 #e0b23f;
+        z-index: 40;
+      }
+      #toast {
+        position: fixed;
+        left: 50%;
+        bottom: 88px;
+        transform: translate(-50%, 20px);
+        background: var(--teks);
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 16px;
+        opacity: 0;
+        transition: 0.3s;
+        z-index: 80;
+        max-width: 90%;
+        font-size: 0.95rem;
+        pointer-events: none;
+      }
+      #toast.tampil {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 1.4rem;
+        }
+        .siswa {
+          width: 120px;
+        }
+        .tipsKotak {
+          right: -10px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition: none !important;
+        }
+      }
+      .depan {
+        padding: 0;
+        overflow: hidden;
+      }
+      .depan img {
+        width: 50%;
+        height: 50%;
+        object-fit: cover;
+        border-radius: 22px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 1. KUNCI LAYAR -->
+    <section id="kunci" class="screen aktif">
+      <div class="bg-wrap">
+        <img
+          class="bg-guru"
+          src="img/guru-kunci.png"
+          alt=""
+          aria-hidden="true"
+        />
+      </div>
+      <div class="kartu" id="kartuKunci">
+        <h1>Layar ini terkunci</h1>
+        <p>Masukkan PIN rahasia untuk membukanya.</p>
+        <p class="kecil">
+          Petunjuk: tanggal Hari Guru Nasional, format DDMMYY 😉
+        </p>
+        <div id="titik"></div>
+        <div class="pad" id="pad">
+          <button data-k="1">1</button><button data-k="2">2</button
+          ><button data-k="3">3</button> <button data-k="4">4</button
+          ><button data-k="5">5</button><button data-k="6">6</button>
+          <button data-k="7">7</button><button data-k="8">8</button
+          ><button data-k="9">9</button> <button data-k="del">⌫</button
+          ><button data-k="0">0</button><span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. LAYAR UTAMA -->
+    <section id="utama" class="screen">
+      <div class="kartu">
+        <div class="area">
+          <svg
+            class="siswa"
+            id="siswa"
+            viewBox="0 0 160 190"
+            role="img"
+            aria-label="Siswa SMK membungkuk hormat"
+          >
+            <circle cx="80" cy="48" r="34" fill="#FFE0B2" />
+            <path
+              d="M45 46Q52 10 80 12Q110 12 115 46Q100 28 80 30Q60 30 45 46Z"
+              fill="#5B3A29"
+            />
+            <circle cx="66" cy="52" r="4.5" fill="#2C4A73" />
+            <circle cx="94" cy="52" r="4.5" fill="#2C4A73" />
+            <path
+              d="M70 66Q80 74 90 66"
+              stroke="#2C4A73"
+              stroke-width="3"
+              fill="none"
+              stroke-linecap="round"
+            />
+            <circle cx="58" cy="64" r="5" fill="#FFB7B2" />
+            <circle cx="102" cy="64" r="5" fill="#FFB7B2" />
+            <path
+              d="M48 86Q80 76 112 86L120 160Q80 178 40 160Z"
+              fill="#86C9F2"
+            />
+            <path d="M80 86L70 104L80 116L90 104Z" fill="#FFD35C" />
+            <path
+              d="M50 100Q34 128 64 138"
+              stroke="#FFE0B2"
+              stroke-width="13"
+              fill="none"
+              stroke-linecap="round"
+            />
+            <path
+              d="M110 100Q126 128 96 138"
+              stroke="#FFE0B2"
+              stroke-width="13"
+              fill="none"
+              stroke-linecap="round"
+            />
+            <rect x="56" y="160" width="18" height="24" rx="6" fill="#2C4A73" />
+            <rect x="86" y="160" width="18" height="24" rx="6" fill="#2C4A73" />
+          </svg>
+          <div
+            class="tipsKotak"
+            data-tip="Bunga ini hasil iuran seisi kelas. Terima kasih sudah sabar menghadapi kami! 💐"
+          >
+            🌻
+          </div>
+        </div>
+        <h1>Untuk Guru SMK Tercinta</h1>
+        <p>
+          Dulu kami datang dengan tangan kosong dan belum bisa apa-apa. Lewat
+          bimbingan Ibu dan Bapak, kami belajar, salah, mencoba lagi, lalu
+          akhirnya siap bekerja dan berkarya.
+        </p>
+        <p class="pesanSiswa" id="pesanSiswa">
+          Ketuk aku untuk pesan rahasia 🤫
+        </p>
+        <button class="btn" onclick="show('galeri')">
+          Lihat kenangan kelas
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. GALERI -->
+    <section id="galeri" class="screen">
+      <div class="kartu lebar">
+        <h2>Kenangan di kelas dan bengkel</h2>
+        <p class="kecil">Ketuk setiap foto untuk membaliknya.</p>
+        <div class="grid">
+          <div
+            class="foto"
+            tabindex="0"
+            onclick="this.classList.toggle('balik')"
+          >
+            <div class="sisi depan">
+              <img src="img/kamera.png" alt="" />
+            </div>
+            <div class="sisi belakang">
+              Praktik bengkel pertama. Baut kendor, ilmu kenceng. 🔧
+            </div>
+          </div>
+          <div
+            class="foto"
+            tabindex="0"
+            onclick="this.classList.toggle('balik')"
+          >
+            <div class="sisi depan">
+              <img src="img/kamera.png" alt="" />
+            </div>
+            <div class="sisi belakang">
+              Kelas pagi semangat penuh. Kelas siang? Ya begitulah. 😴
+            </div>
+          </div>
+          <div
+            class="foto"
+            tabindex="0"
+            onclick="this.classList.toggle('balik')"
+          >
+            <div class="sisi depan">
+              <img src="img/kamera.png" alt="" />
+            </div>
+            <div class="sisi belakang">
+              Foto usai lomba. Kami menang, dan Ibu/Bapak paling heboh. 🏆
+            </div>
+          </div>
+          <div
+            class="foto"
+            tabindex="0"
+            onclick="this.classList.toggle('balik')"
+          >
+            <div class="sisi depan">
+              <img src="img/kamera.png" alt="" />
+            </div>
+            <div class="sisi belakang">
+              Tugas dikumpul telat, tapi kenangan ini tepat waktu. 📚
+            </div>
+          </div>
+          <div
+            class="foto"
+            tabindex="0"
+            onclick="this.classList.toggle('balik')"
+          >
+            <div class="sisi depan">
+              <img src="img/kamera.png" alt="" />
+            </div>
+            <div class="sisi belakang">
+              Momen magang. Ternyata yang paling deg-degan itu guru. 😂
+            </div>
+          </div>
+          <div
+            class="foto"
+            tabindex="0"
+            onclick="this.classList.toggle('balik')"
+          >
+            <div class="sisi depan">
+              <img src="img/kamera.png" alt="" />
+            </div>
+            <div class="sisi belakang">
+              Terima kasih sudah jadi guru, sekaligus orang tua kedua di
+              sekolah. 💛
+            </div>
+          </div>
+        </div>
+        <button class="btn" onclick="show('penutup')">Lanjut ke penutup</button>
+      </div>
+    </section>
+
+    <!-- 4. PENUTUP -->
+    <section id="penutup" class="screen">
+      <div class="kartu">
+        <div class="maskot">🎓</div>
+        <h1>Satu langkah terakhir</h1>
+        <p>
+          Setelah ujian dadakan dan semua cerita kelas, sekarang giliran Ibu dan
+          Bapak yang memberi nilai. Kali ini, siswa yang akan dinilai.
+        </p>
+        <button class="btn" id="btnNilai">
+          Klik untuk memberi nilai kelulusan siswa!
+        </button>
+        <br />
+        <button class="btn sekunder" onclick="show('galeri')">Kembali</button>
+      </div>
+    </section>
+
+    <!-- MODAL UJIAN DADAKAN -->
+    <div class="modal" id="modalUjian">
+      <div class="kartu">
+        <div class="maskot">📝</div>
+        <h2>Ujian dadakan untuk Guru SMK</h2>
+        <p class="kecil">Jawab sesuai pengalaman Ibu dan Bapak. Bebas.</p>
+        <p class="kecil" id="noSoal" style="margin-top: 12px"></p>
+        <p id="teksSoal" style="font-weight: 700; font-size: 1.1rem"></p>
+        <div id="pilihan"></div>
+      </div>
+    </div>
+
+    <!-- MODAL PESTA -->
+    <div class="pesta" id="pesta">
+      <div class="kartu">
+        <div class="maskot">🏆</div>
+        <h2>Selamat Hari Guru!</h2>
+        <p>Nilai kelulusan untuk <b>Guru SMK Terbaik</b>: <b>A+++</b></p>
+        <p>
+          Terima kasih sudah membimbing kami dari belum bisa apa-apa sampai siap
+          kerja dan berkarya. 💛
+        </p>
+        <button class="btn" onclick="kunciUlang()">Kunci lagi 🔒</button>
+      </div>
+    </div>
+
+    <!-- MUSIK -->
+    <audio id="bgm" loop preload="none"></audio>
+    <button id="btnMusik" title="Putar atau jeda musik">🎵</button>
+    <div id="toast"></div>
+
+    <script>
+      const PIN = "251126";
+      // Isi dengan link MP3 lagu "Terima Kasih Guruku", contoh: "https://domain-anda.com/terima-kasih-guruku.mp3"
+      const URL_LAGU = "audio/lagu.mp3";
+
+      const $ = (s) => document.querySelector(s);
+      const $$ = (s) => document.querySelectorAll(s);
+
+      function show(id) {
+        $$(".screen").forEach((s) => s.classList.remove("aktif"));
+        $("#" + id).classList.add("aktif");
+        window.scrollTo(0, 0);
+      }
+
+      function toast(teks) {
+        const el = $("#toast");
+        el.textContent = teks;
+        el.classList.add("tampil");
+        clearTimeout(toast.t);
+        toast.t = setTimeout(() => el.classList.remove("tampil"), 2800);
+      }
+
+      function confetti(n = 80, emoji = "") {
+        const warna = ["#FFD35C", "#86C9F2", "#FFF1BE", "#A8DBFF", "#FFB7B2"];
+        for (let i = 0; i < n; i++) {
+          const c = document.createElement("i");
+          c.className = "conf";
+          c.style.left = Math.random() * 100 + "vw";
+          c.style.animationDuration = 2 + Math.random() * 2.5 + "s";
+          c.style.animationDelay = Math.random() * 0.6 + "s";
+          if (emoji) {
+            c.textContent = emoji;
+            c.style.background = "none";
+            c.style.width = "auto";
+            c.style.height = "auto";
+            c.style.fontSize = "1.5rem";
+          } else {
+            c.style.background = warna[i % warna.length];
+          }
+          document.body.appendChild(c);
+          setTimeout(() => c.remove(), 5200);
+        }
+      }
+
+      /* ---------- 1. PIN ---------- */
+      let pin = "";
+      const titik = $("#titik");
+      for (let i = 0; i < 6; i++)
+        titik.appendChild(document.createElement("span"));
+
+      function renderTitik() {
+        [...titik.children].forEach((s, i) =>
+          s.classList.toggle("isi", i < pin.length),
+        );
+      }
+
+      $("#pad").addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (!b) return;
+        const k = b.dataset.k;
+        if (k === "del") pin = pin.slice(0, -1);
+        else if (pin.length < 6) pin += k;
+        renderTitik();
+
+        if (pin.length === 6) {
+          if (pin === PIN) {
+            setTimeout(mulaiUjian, 350);
+          } else {
+            $("#kartuKunci").classList.add("goyang");
+            toast("Hmm, PIN-nya belum tepat 😅 coba lagi ya!");
+            setTimeout(() => {
+              pin = "";
+              renderTitik();
+              $("#kartuKunci").classList.remove("goyang");
+            }, 500);
+          }
+        }
+      });
+
+      /* ---------- 2. UJIAN DADAKAN ---------- */
+      const soal = [
+        {
+          q: "Berapa kali siswa minta izin ke toilet saat jam pelajaran ke-7?",
+          o: [
+            "1 kali",
+            "3 kali",
+            "Lupa menghitung, Pak/Bu",
+            "Baru 5 menit lalu, dan sekarang minta lagi",
+          ],
+        },
+        {
+          q: 'Saat ditanya "Mana tugasnya?", jawaban siswa biasanya...',
+          o: [
+            "Ada, Bu, ketinggalan di flashdisk",
+            "Lagi di-upload, Pak",
+            "Sudah dikirim ke grup lain",
+            "Tugasnya ada di HP teman",
+          ],
+        },
+      ];
+      let nomor = 0;
+
+      function mulaiUjian() {
+        nomor = 0;
+        tampilSoal();
+        $("#modalUjian").classList.add("tampil");
+      }
+
+      function tampilSoal() {
+        const s = soal[nomor];
+        $("#noSoal").textContent = `Soal ${nomor + 1} dari ${soal.length}`;
+        $("#teksSoal").textContent = s.q;
+        $("#pilihan").innerHTML = s.o
+          .map((t) => `<button class="opsi">${t}</button>`)
+          .join("");
+      }
+
+      $("#pilihan").addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (!b) return;
+
+        if (b.id === "btnLanjut") {
+          $("#modalUjian").classList.remove("tampil");
+          show("utama");
+          confetti(90);
+          return;
+        }
+        if (!b.classList.contains("opsi")) return;
+
+        // Jawaban apa pun diterima, karena sistem sudah tahu hasilnya.
+        nomor++;
+        if (nomor < soal.length) {
+          tampilSoal();
+        } else {
+          $("#noSoal").textContent = "";
+          $("#teksSoal").textContent = "Hasil ujian dadakanmu sudah keluar!";
+          $("#pilihan").innerHTML = `
+      <div class="skor">Skor: 100+ / A+++ 🏆</div>
+      <p class="kecil">Catatan penguji: semua jawaban dinilai benar. Guru SMK memang sudah lulus ujian kesabaran sejak hari pertama.</p>
+      <button class="btn" id="btnLanjut">Lanjut</button>`;
+        }
+      });
+
+      /* ---------- 3. LAYAR UTAMA: siswa & pesan rahasia ---------- */
+      const pesan = [
+        "Terima kasih sudah sabar mengajari kami dari nol. 🌱",
+        "Dulu kami belum bisa apa-apa. Sekarang kami bisa bekerja dan berkarya. 💼",
+        "Ilmu Ibu dan Bapak ikut kami bawa sampai ke dunia kerja. 🛠️",
+        "Maaf kalau dulu sering bikin pusing. Sekarang kami paham rasanya. 😅",
+        "Terima kasih tidak pernah menyerah pada kami. ❤️",
+      ];
+      let idxPesan = 0;
+
+      $("#siswa").addEventListener("click", () => {
+        const s = $("#siswa");
+        s.classList.remove("membungkuk");
+        void s.offsetWidth; // restart animasi
+        s.classList.add("membungkuk");
+        $("#pesanSiswa").textContent = pesan[idxPesan];
+        idxPesan = (idxPesan + 1) % pesan.length;
+      });
+
+      $$(".tipsKotak").forEach((el) =>
+        el.addEventListener("click", () => el.classList.toggle("buka")),
+      );
+
+      /* ---------- 4. PENUTUP ---------- */
+      $("#btnNilai").addEventListener("click", () => {
+        $("#pesta").classList.add("tampil");
+        confetti(70, "⭐");
+        confetti(60);
+      });
+
+      // Kembali ke layar kunci: PIN direset dan ujian mulai dari awal
+      function kunciUlang() {
+        $("#pesta").classList.remove("tampil");
+        $("#modalUjian").classList.remove("tampil");
+        pin = "";
+        renderTitik();
+        show("kunci");
+        toast("Layar terkunci lagi. Silakan masukkan PIN dari awal 😉");
+      }
+
+      /* ---------- 5. MUSIK ---------- */
+      const bgm = $("#bgm");
+      let putar = false;
+
+      $("#btnMusik").addEventListener("click", () => {
+        if (!URL_LAGU) {
+          toast(
+            "Isi URL_LAGU di dalam script dengan link MP3 lagunya dulu ya 🎵",
+          );
+          return;
+        }
+        if (!putar) {
+          if (!bgm.getAttribute("src")) bgm.src = URL_LAGU;
+          bgm
+            .play()
+            .then(() => {
+              putar = true;
+              $("#btnMusik").textContent = "⏸️";
+            })
+            .catch(() =>
+              toast("Audio belum bisa diputar. Cek kembali link MP3-nya 😢"),
+            );
+        } else {
+          bgm.pause();
+          putar = false;
+          $("#btnMusik").textContent = "🎵";
+        }
+      });
+    </script>
+  </body>
+</html>
